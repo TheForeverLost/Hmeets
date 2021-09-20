@@ -1,3 +1,5 @@
+create database projectdatabase;
+use projectdatabase;
 CREATE TABLE `users` (
   `ID` int NOT NULL,
   `Name` varchar(45) NOT NULL,
@@ -8,7 +10,7 @@ CREATE TABLE `users` (
   `Password` varchar(45) NOT NULL,
   `LastLogin` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`)
-)
+);
 
 CREATE TABLE `meetingroom` (
   `MeetingRoomId` int NOT NULL,
@@ -19,7 +21,7 @@ CREATE TABLE `meetingroom` (
   `NumberOfFeedbacks` int NOT NULL,
   PRIMARY KEY (`MeetingRoomId`),
   UNIQUE KEY `Name_UNIQUE` (`Name`)
-) 
+) ;
 
 CREATE TABLE `meeting` (
   `MeetingId` int NOT NULL AUTO_INCREMENT,
@@ -38,7 +40,7 @@ CREATE TABLE `meeting` (
   CONSTRAINT `BookedBy` FOREIGN KEY (`BookedBy`) REFERENCES `users` (`ID`),
   CONSTRAINT `OrganizedBy` FOREIGN KEY (`OrganizedBy`) REFERENCES `users` (`ID`),
   CONSTRAINT `RoomId` FOREIGN KEY (`MeetingRoomId`) REFERENCES `meetingroom` (`MeetingRoomId`) ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
 
 CREATE TABLE `projectdatabase`.`feedback` (
   `FeedbackId` INT NOT NULL,
@@ -60,13 +62,20 @@ CREATE TABLE `projectdatabase`.`feedback` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-    CREATE TABLE `meeting_room_amenities` (
+CREATE TABLE `amenities` (
+  `AmenityId` int NOT NULL,
+  `AmenityName` varchar(45) DEFAULT NULL,
+  `AmenityCost` decimal(4,2) DEFAULT NULL,
+  PRIMARY KEY (`AmenityId`)
+);
+
+CREATE TABLE `meeting_room_amenities` (
   `AmenityId` int NOT NULL,
   `MeetingRoomId` int NOT NULL,
   PRIMARY KEY (`AmenityId`,`MeetingRoomId`),
   KEY `MeetingRoomId_idx` (`MeetingRoomId`),
   CONSTRAINT `AmenityId` FOREIGN KEY (`AmenityId`) REFERENCES `amenities` (`AmenityId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `MeetingRoomId` FOREIGN KEY (`MeetingRoomId`) REFERENCES `meetingroom` (`MeetingRoomId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `MeetingRoomIdMeetingRoomAmenities` FOREIGN KEY (`MeetingRoomId`) REFERENCES `meetingroom` (`MeetingRoomId`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `attendee` (
@@ -75,12 +84,7 @@ CREATE TABLE `attendee` (
   KEY `UserId_idx` (`UserId`),
   KEY `MeetingId_idx` (`MeetingId`),
   CONSTRAINT `MeetingId` FOREIGN KEY (`MeetingId`) REFERENCES `meeting` (`MeetingId`),
-  CONSTRAINT `UserID` FOREIGN KEY (`UserId`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `UserIDAttendee` FOREIGN KEY (`UserId`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE `amenities` (
-  `AmenityId` int NOT NULL,
-  `AmenityName` varchar(45) DEFAULT NULL,
-  `AmenityCost` decimal(4,2) DEFAULT NULL,
-  PRIMARY KEY (`AmenityId`)
-);
+
